@@ -19,26 +19,19 @@ def fetch_image_urls(url):
 
 def create_folder(label):
     folder_name = label.replace(" ", "_")
-    os.makedirs(folder_name, exist_ok=True)
-    return folder_name
+    folder_path = f'data/{folder_name}'
+    os.makedirs(folder_path, exist_ok=True)
+    return folder_path, folder_name
 
-def download_image(img_url, folder_name, index):
+def download_image(img_url, folder_name, folder_path, index):
     try:
         img_data = requests.get(img_url).content
-        with open(f"{folder_name}/{folder_name}_{index+1}.jpg", 'wb') as f:
+        with open(f"{folder_path}/{folder_name}_{index+1}.jpg", 'wb') as f:
             f.write(img_data)
         print(f"Downloaded {folder_name}_{index+1}.jpg")
         time.sleep(1)
     except Exception as e:
         print(f"Error downloading image {index+1}: {e}")
-
-def download_images(label, num_images):
-    url = get_search_url(label)
-    img_urls = fetch_image_urls(url)
-    folder_name = create_folder(label)
-    
-    for i, img_url in enumerate(img_urls[:num_images]):
-        download_image(img_url, folder_name, i)
 
 
 def download_images(label, num_images):
@@ -54,10 +47,10 @@ def download_images(label, num_images):
     """
     url = get_search_url(label)
     img_urls = fetch_image_urls(url)
-    folder_name = create_folder(label)
+    folder_path, folder_name = create_folder(label)
     
     for i, img_url in enumerate(img_urls[:num_images]):
-        download_image(img_url, folder_name, i)
+        download_image(img_url, folder_name, folder_path, i)
 
 if __name__ == "__main__":
     label = input("Enter the label (e.g., 'cats', 'power line'): ")
